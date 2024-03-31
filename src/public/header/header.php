@@ -1,14 +1,10 @@
 <header>
-    <div style="display: flex;">
-        <!-- right -->
-        <div style="width: 30%;">
-            <p style="display: flex; font-weight: bold;">家計簿アプリ</p>
-        </div>
-        <!-- left -->
-        <nav style="width: 70%;">
+    <div>
+        <nav style="width: 100%;">
             <ol style="width: 100%; display: flex; justify-content: space-around;">
-                <list><a href="../index.php">ホーム</a></list>
-                <list><a href="../category/index.php">カテゴリー</a></list>
+                <list><a href="/../index.php">HOME</a></list>
+                <list><a href="/../incomes/index.php">収入TOP</a></list>
+                <list><a href="/../spendings/index.php">支出TOP</a></list>
                 <form action="../process/user/logout.php" method="post">
                     <button type="submit">ログアウト</button>
                 </form>
