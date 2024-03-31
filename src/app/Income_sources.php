@@ -7,6 +7,7 @@ interface income_sourcesInterface
     public static function validate();
     public function addIncome_sources($userId, $name);
     public function getIncome_sources($userId);
+    public function deleteIncome_sources($income_sources_id);
 }
 
 abstract class AbstractIncome_sources implements income_sourcesInterface
@@ -46,5 +47,18 @@ class Income_sources extends AbstractIncome_sources
         $smt = $this->pdo->prepare('SELECT * FROM income_sources WHERE user_id = :user_id');
         $smt->execute([':user_id' => $userId]);
         return $smt->fetchAll(PDO::FETCH_ASSOC);
+    }
+
+    public function deleteIncome_sources($income_source_id)
+    {
+        $incomesCountQuery = $this->pdo->prepare('SELECT COUNT(*) FROM incomes WHERE income_source_id = :income_source_id');
+        $incomesCountQuery->execute(array(':income_source_id' => $income_source_id));
+        $incomesCount = $incomesCountQuery->fetchColumn();
+        if($incomesCount > 0) {
+            $_SESSION['errorDeleteIncome_sources'] = '現在紐づく収入があるので削除できません';
+            return;
+        }
+        $smt = $this->pdo->prepare('DELETE FROM income_sources WHERE id = :id');
+        $smt->execute(array(':id' => $income_source_id));
     }
 }
