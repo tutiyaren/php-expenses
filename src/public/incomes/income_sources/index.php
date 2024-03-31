@@ -1,6 +1,11 @@
 <?php
 require_once '../../common/auth.php';
+require '../../../app/Income_sources.php';
+use App\Income_sources;
+$pdo = new PDO('mysql:host=mysql;dbname=kakeibo', 'root', 'password');
 
+$income_sourcesModel = new Income_sources($pdo);
+$allIncome_sources = $income_sourcesModel->getIncome_sources($userId);
 
 ?>
 
@@ -32,18 +37,20 @@ require_once '../../common/auth.php';
                 <th>編集</th>
                 <th>削除</th>
             </tr>
-            <!-- foreach -->
+            <?php foreach($allIncome_sources as $allIncome_source): ?>
             <tr>
-                <td>SES</td>
+                <td><?php echo $allIncome_source['name'] ?></td>
                 <td>
                     <a href="edit.php">編集</a>
                 </td>
                 <td>
                     <form action="../../process/incomes/income_sources/delete.php" method="POST">
+                        <input type="hidden" name="income_sources_id" value="<?php echo $allIncome_source['id'] ?>">
                         <button type="submit" name="delete">削除</button>
                     </form>
                 </td>
             </tr>
+            <?php endforeach; ?>
         </table>
 
         <div>

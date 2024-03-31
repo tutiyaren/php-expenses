@@ -1,6 +1,11 @@
 <?php
 require_once '../../common/auth.php';
 
+$errorAddIncome_source = "";
+if(isset($_SESSION['errorAddIncome_source'])) {
+    $errorAddIncome_source = $_SESSION['errorAddIncome_source'];
+    unset($_SESSION['errorAddIncome_source']);
+}
 
 ?>
 
@@ -23,10 +28,13 @@ require_once '../../common/auth.php';
 
         <!-- 収支登録 -->
         <div>
+            <div>
+                <?php echo $errorAddIncome_source ?>
+            </div>
             <form action="../../process/incomes/income_sources/store.php" method="POST">
                 <div>
                     <span>収入源 : </span>
-                    <input type="text" name="" placeholder="収入源を追加">
+                    <input type="text" name="name" placeholder="収入源を追加">
                 </div>
 
                 <button type="submit" name="store">登録</button>
