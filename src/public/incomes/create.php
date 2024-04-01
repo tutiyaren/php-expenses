@@ -1,5 +1,18 @@
 <?php
 require_once '../common/auth.php';
+require '../../app/Income_sources.php';
+use App\Income_sources;
+$pdo = new PDO('mysql:host=mysql;dbname=kakeibo', 'root', 'password');
+
+$income_sourcesModel = new Income_sources($pdo);
+$allIncome_sources = $income_sourcesModel->getIncome_sources($userId);
+$income_sourceName = "";
+
+$errorAddIncomes = "";
+if(isset($_SESSION['errorAddIncomes'])) {
+    $errorAddIncomes = $_SESSION['errorAddIncomes'];
+    unset($_SESSION['errorAddIncomes']);
+}
 
 
 ?>
@@ -26,27 +39,32 @@ require_once '../common/auth.php';
             <form action="../process/incomes/store.php" method="POST">
                 <div>
                     <span>収入源 : </span>
-                    <select name="">
-                        <option value=""></option>
-                        <option value=""></option>
+                    <select name="income_sourceName">
+                        <option disabled selected style="display: none;">収入源を選択してください</option>
+                        <?php foreach($allIncome_sources as $allIncome_source): ?>
+                        <option><?php echo $allIncome_source['name'] ?></option>
+                        <?php endforeach ?>
                     </select>
                     <a href="income_sources/index.php">収入源一覧へ</a>
                 </div>
 
                 <div>
                     <span>金額</span>
-                    <input type="text" name="">
+                    <input type="number" name="amount">
                     <span>円</span>
                 </div>
 
                 <div>
                     <span>日付</span>
-                    <input type="date" name="">
+                    <input type="date" name="accrual_date">
                 </div>
 
-                <button type="submit" name="store">登録</button>
+                <button type="submit" name="create">登録</button>
 
             </form>
+            <div>
+                <?php echo $errorAddIncomes ?>
+            </div>
             <div>
                 <a href="index.php">戻る</a>
             </div>
