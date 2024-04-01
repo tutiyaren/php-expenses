@@ -8,6 +8,8 @@ interface income_sourcesInterface
     public function addIncome_sources($userId, $name);
     public function getIncome_sources($userId);
     public function deleteIncome_sources($income_sources_id);
+    public function getIncome_source($incom_sources_id);
+    public function updateIncome_sources($incom_source_id, $name);
 }
 
 abstract class AbstractIncome_sources implements income_sourcesInterface
@@ -61,4 +63,18 @@ class Income_sources extends AbstractIncome_sources
         $smt = $this->pdo->prepare('DELETE FROM income_sources WHERE id = :id');
         $smt->execute(array(':id' => $income_source_id));
     }
+
+    public function getIncome_source($incom_sources_id)
+    {
+        $smt = $this->pdo->prepare('SELECT * FROM income_sources WHERE id = :id');
+        $smt->execute(['id' => $incom_sources_id]);
+        $incom_sources = $smt->fetch(PDO::FETCH_ASSOC);
+        return $incom_sources;
+    }
+
+    public function updateIncome_sources($incom_source_id, $name)
+    {
+        $smt = $this->pdo->prepare('UPDATE income_sources SET name = :name WHERE id = :id');
+        $smt->execute(array(':id' => $incom_source_id, ':name' => $name));
+    } 
 }

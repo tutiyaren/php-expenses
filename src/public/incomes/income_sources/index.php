@@ -47,7 +47,7 @@ $allIncome_sources = $income_sourcesModel->getIncome_sources($userId);
             <tr>
                 <td><?php echo $allIncome_source['name'] ?></td>
                 <td>
-                    <a href="edit.php">編集</a>
+                    <a href="edit.php?id=<?php echo $allIncome_source['id']; ?>">編集</a>
                 </td>
                 <td>
                     <form action="../../process/incomes/income_sources/delete.php" method="POST">
