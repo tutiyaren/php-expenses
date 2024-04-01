@@ -6,6 +6,7 @@ $pdo = new PDO('mysql:host=mysql;dbname=kakeibo', 'root', 'password');
 
 $incomeModel = new Incomes($pdo);
 $allIncomes = $incomeModel->getIncomes($userId);
+$allAmount = $incomeModel->getAllAmount($userId);
 
 ?>
 
@@ -27,7 +28,7 @@ $allIncomes = $incomeModel->getIncomes($userId);
         </div>
 
         <div>
-            <p>合計額 : 800000</p>
+            <p>合計額 : <?php echo $allAmount ?></p>
         </div>
         <div>
             <a href="create.php">収入を登録する</a>

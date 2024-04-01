@@ -10,6 +10,7 @@ interface incomeInterface
     public function deleteIncome($income_id);
     public function getIncome($incomeId);
     public function updateIncome($income_id, $income_source_id, $amount, $accrual_date);
+    public function getAllAmount($userId);
 }
 
 abstract class AbstractIncome implements incomeInterface
@@ -90,6 +91,14 @@ class Incomes extends AbstractIncome
             ':amount' => $amount,
             ':accrual_date' => $accrual_date
         ]);
+    }
+
+    public function getAllAmount($userId)
+    {
+        $smt = $this->pdo ->prepare('SELECT SUM(amount) as totalAmount FROM incomes WHERE user_id = :user_id');
+        $smt->execute([':user_id' => $userId]);
+        $allAmount = $smt->fetch(PDO::FETCH_ASSOC);
+        return $allAmount['totalAmount'];
     }
 }
 
