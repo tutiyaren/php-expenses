@@ -1,6 +1,18 @@
 <?php
 require_once '../common/auth.php';
+require '../../app/Categories.php';
+use App\Categories;
+$pdo = new PDO('mysql:host=mysql;dbname=kakeibo', 'root', 'password');
 
+$categoriesModel = new Categories($pdo);
+$allCategories = $categoriesModel->getCategories($userId);
+$categoryName = "";
+
+$errorAddSpendings = "";
+if(isset($_SESSION['errorAddSpendings'])) {
+    $errorAddSpendings = $_SESSION['errorAddSpendings'];
+    unset($_SESSION['errorAddSpendings']);
+}
 
 
 ?>
@@ -24,13 +36,17 @@ require_once '../common/auth.php';
 
         <!-- 支出登録 -->
         <div>
-            <form action="../process/incomes/store.php" method="POST">
+            <form action="../process/spendings/store.php" method="POST">
                 <div>
-                    <span>支出 : </span>
-                    <select name="income_sourceName">
+                    <label for="name">支出名</label>
+                    <input type="text" id="name" name="name" placeholder="支出名">
+                </div>
+                <div>
+                    <span>支出源 : </span>
+                    <select name="categoryName">
                         <option disabled selected style="display: none;">支出を選択してください</option>
-                        <?php foreach($allIncome_sources as $allIncome_source): ?>
-                        <option><?php echo $allIncome_source['name'] ?></option>
+                        <?php foreach($allCategories as $allCategory): ?>
+                        <option><?php echo $allCategory['name'] ?></option>
                         <?php endforeach ?>
                     </select>
                     <a href="categories/index.php">支出一覧へ</a>
@@ -50,12 +66,15 @@ require_once '../common/auth.php';
                 <button type="submit" name="create">登録</button>
 
             </form>
-            
+            <div>
+                <?php echo $errorAddSpendings ?>
+            </div>
             <div>
                 <a href="index.php">戻る</a>
             </div>
         </div>
     </div>
+    
   
 </body>
 </html>

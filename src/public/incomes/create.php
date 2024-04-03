@@ -70,6 +70,7 @@ if(isset($_SESSION['errorAddIncomes'])) {
             </div>
         </div>
     </div>
+    
   
 </body>
 </html>

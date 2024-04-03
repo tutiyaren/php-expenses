@@ -1,12 +1,23 @@
 <?php
 require_once '../common/auth.php';
-require '../../app/Incomes.php';
-require '../../app/Income_sources.php';
-use App\Incomes;
-use App\Income_sources;
+require '../../app/Spendings.php';
+require '../../app/Categories.php';
+use App\Spendings;
+use App\Categories;
 $pdo = new PDO('mysql:host=mysql;dbname=kakeibo', 'root', 'password');
 
+$spendingModel = new Spendings($pdo);
+$spending_id = $_GET['id'];
+$spending = $spendingModel->getSpending($spending_id);
 
+$categoryModel = new Categories($pdo);
+$allSpendings = $categoryModel->getCategories($userId);
+
+$errorUpdateSpending = "";
+if(isset($_SESSION['errorUpdateSpending'])) {
+    $errorUpdateSpending = $_SESSION['errorUpdateSpending'];
+    unset($_SESSION['errorUpdateSpending']);
+}
 
 ?>
 
@@ -24,21 +35,25 @@ $pdo = new PDO('mysql:host=mysql;dbname=kakeibo', 'root', 'password');
     <div>
 
         <div>
-            <h1>収入編集</h1>
+            <h1>支出編集</h1>
         </div>
 
-        <!-- 収支編集 -->
+        <!-- 支出編集 -->
         <div>
-            <form action="../process/incomes/update.php" method="POST">
+            <form action="../process/spendings/update.php" method="POST">
                 <div>
-                    <span>収入源 : </span>
-                    <select name="income_sourceName">
-                        <?php foreach($allIncomes as $allIncome): ?>  
-                        <?php if($allIncome['id'] === $income['income_source_id']): ?>  
-                        <option value="<?php echo $allIncome['id']; ?>" selected><?php echo $allIncome['name'] ?></option>
+                    <label for="name">支出名</label>
+                    <input type="text" id="name" placeholder="支出名" name="name" value="<?php echo $spending['name'] ?>">
+                </div>
+                <div>
+                    <span>支出源 : </span>
+                    <select name="categoryName">
+                        <?php foreach($allSpendings as $allSpending): ?>  
+                        <?php if($allSpending['id'] === $spending['category_id']): ?>  
+                        <option value="<?php echo $allSpending['id']; ?>" selected><?php echo $allSpending['name'] ?></option>
                         <?php endif; ?>
-                        <?php if(!($allIncome['id'] === $income['income_source_id'])): ?>  
-                        <option value="<?php echo $allIncome['id']; ?>"><?php echo $allIncome['name'] ?></option>
+                        <?php if(!($allSpending['id'] === $spending['category_id'])): ?>  
+                        <option value="<?php echo $allSpending['id']; ?>"><?php echo $allSpending['name'] ?></option>
                         <?php endif; ?>
                         <?php endforeach; ?>
                     </select>
@@ -46,21 +61,21 @@ $pdo = new PDO('mysql:host=mysql;dbname=kakeibo', 'root', 'password');
 
                 <div>
                     <span>金額</span>
-                    <input type="text" name="amount" placeholder="金額を入力" value="<?php echo $income['amount'] ?>">
+                    <input type="text" name="amount" placeholder="金額を入力" value="<?php echo $spending['amount'] ?>">
                     <span>円</span>
                 </div>
 
                 <div>
                     <span>日付</span>
-                    <input type="date" name="accrual_date" value="<?php echo $income['accrual_date'] ?>">
+                    <input type="date" name="accrual_date" value="<?php echo $spending['accrual_date'] ?>">
                 </div>
-                <input type="hidden" name="income_id" value="<?php echo $income['id'] ?>">
+                <input type="hidden" name="spending_id" value="<?php echo $spending['id'] ?>">
                 <button type="submit" name="update">編集</button>
 
             </form>
 
             <div>
-                <?php echo $errorUpdateIncome; ?>
+                <?php echo $errorUpdateSpending; ?>
             </div>
             
         </div>
