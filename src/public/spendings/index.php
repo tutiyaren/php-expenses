@@ -11,7 +11,25 @@ $allSpendings = $spendingModel->getSpendings($userId);
 $allAmount = $spendingModel->getAllAmount($userId);
 
 $categoriesModel = new Categories($pdo);
-$allCategory = $categoriesModel->getCategory($userId);
+$allCategories = $categoriesModel->getAllCategories();
+$uniqueSpendingSources = array_unique(array_column($allCategories, 'name'));
+
+if(isset($_GET['search']) && isset($_GET['categoryName']) && !empty($_GET['categoryName'])) {
+    $start_date = $_GET['start_date'];
+    $end_date = $_GET['end_date'];
+    $categoryName = $_GET['categoryName'];
+    $filteredSpendings = $spendingModel->getFilteredSpendings($userId, $categoryName, $start_date, $end_date);
+}
+if(isset($_GET['search']) && !(isset($_GET['categoryName'])) && empty($_GET['categoryName'])) {
+    $start_date = $_GET['start_date'];
+    $end_date = $_GET['end_date'];
+    $categoryName = null;
+    $filteredSpendings = $spendingModel->getFilteredSpendings($userId, $categoryName, $start_date, $end_date);
+}
+
+if(!(isset($_GET['search']))) {
+    $filteredSpendings = $allSpendings;
+}
 
 
 ?>
@@ -44,24 +62,20 @@ $allCategory = $categoriesModel->getCategory($userId);
         <div>
             <form method="GET">
                 <span>
-                    収入源 : 
+                    カテゴリー : 
                 </span>
-                <select name="">
-                    <option value=""></option>
-                    <option value=""></option>
+                <select name="categoryName">
+                    <option disabled selected style="display: none;">カテゴリーを選択してください</option>
+                    <?php foreach($allCategories as $category): ?>
+                        <option value="<?php echo $category['name'] ?>"><?php echo $category['name'] ?></option>
+                    <?php endforeach; ?>
                 </select>
                 <span>
                     日付 : 
                 </span>
-                <select name="">
-                    <option value=""></option>
-                    <option value=""></option>
-                </select>
-                <select name="">
-                    <option value=""></option>
-                    <option value=""></option>
-                </select>
-                <button type="button">検索</button>
+                <input type="date" name="start_date" value="<?php echo $_GET['start_date'] ?? '' ?>">
+                <input type="date" name="end_date" value="<?php echo $_GET['end_date'] ?? '' ?>">
+                <button type="submit" name="search">検索</button>
             </form>
         </div>
 
@@ -76,7 +90,7 @@ $allCategory = $categoriesModel->getCategory($userId);
                 <th>削除</th>
             </tr>
             <!-- foreach -->
-            <?php foreach($allSpendings as $allSpending): ?>
+            <?php foreach($filteredSpendings as $allSpending): ?>
             <tr>
                 <td><?php echo $allSpending['name'] ?></td>
                 <td><?php echo $allSpending['categoryName'] ?></td>

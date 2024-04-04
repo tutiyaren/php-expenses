@@ -1,6 +1,16 @@
 <?php
 require_once 'common/auth.php';
+require '../app/Spendings.php';
+require '../app/Incomes.php';
+use App\Incomes;
+use App\Spendings;
+$pdo = new PDO('mysql:host=mysql;dbname=kakeibo', 'root', 'password');
 
+$incomeModel = new Incomes($pdo);
+$monthAmountIncome = $incomeModel->getMonthAmount($userId);
+$spendingModel = new Spendings($pdo);
+$monthAmountSpending = $spendingModel->getMonthAmount($userId);
+$balance = $monthAmountIncome - $monthAmountSpending;
 
 ?>
 
@@ -45,10 +55,10 @@ require_once 'common/auth.php';
             </tr>
             <!-- foreach -->
             <tr>
-                <td>1~12month</td>
-                <td>200000</td>
-                <td>130000</td>
-                <td>70000</td>
+                <td>n月</td>
+                <td><?php echo $monthAmountIncome ?></td>
+                <td><?php echo $monthAmountSpending ?></td>
+                <td><?php echo $balance ?></td>
             </tr>
         </table>
 

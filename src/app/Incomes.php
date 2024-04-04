@@ -11,6 +11,8 @@ interface incomeInterface
     public function getIncome($incomeId);
     public function updateIncome($income_id, $income_source_id, $amount, $accrual_date);
     public function getAllAmount($userId);
+    public function getMonthAmount($userId);
+    public function getFilteredIncomes($userId, $income_sourceName, $start_date, $end_date);
 }
 
 abstract class AbstractIncome implements incomeInterface
@@ -99,6 +101,42 @@ class Incomes extends AbstractIncome
         $smt->execute([':user_id' => $userId]);
         $allAmount = $smt->fetch(PDO::FETCH_ASSOC);
         return $allAmount['totalAmount'];
+    }
+
+    public function getMonthAmount($userId)
+    {
+        $smt = $this->pdo->prepare('SELECT SUM(amount) as monthAmount, MONTH(accrual_date) as month FROM incomes WHERE user_id = :user_id GROUP BY MONTH(accrual_date)');
+        $smt->execute([':user_id' => $userId]);
+        $totalAmount = $smt->fetch(PDO::FETCH_ASSOC);
+        return $totalAmount['monthAmount'];
+    }
+
+    public function getFilteredIncomes($userId, $income_sourceName, $start_date, $end_date)
+    {
+        $sql = 'SELECT incomes.*, income_sources.name AS name FROM incomes LEFT JOIN income_sources ON incomes.income_source_id = income_sources.id WHERE incomes.user_id = :user_id';
+        if (!empty($income_sourceName)) {
+            $sql .= ' AND income_sources.name = :income_source_name';
+        }
+        if (!empty($start_date)) {
+            $sql .= ' AND incomes.accrual_date >= :start_date';
+        }
+        if (!empty($end_date)) {
+            $sql .= ' AND incomes.accrual_date <= :end_date';
+        }
+
+        $stmt = $this->pdo->prepare($sql);
+        $params = [':user_id' => $userId];
+        if (!empty($income_sourceName)) {
+            $params[':income_source_name'] = $income_sourceName;
+        }
+        if (!empty($start_date)) {
+            $params[':start_date'] = $start_date;
+        }
+        if (!empty($end_date)) {
+            $params[':end_date'] = $end_date;
+        }
+        $stmt->execute($params);
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
 }
 

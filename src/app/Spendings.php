@@ -11,6 +11,8 @@ interface spendingInterface
     public function getSpending($spending_id);
     public function updateSpending($spending_id, $category_id, $name, $amount, $accrual_date);
     public function getAllAmount($userId);
+    public function getMonthAmount($userId);
+    public function getFilteredSpendings($userId, $categoryName, $start_date, $end_date);
 }
 
 abstract class AbstractSpending implements spendingInterface
@@ -106,5 +108,41 @@ class Spendings extends AbstractSpending
         $smt->execute([':user_id' => $userId]);
         $allAmount = $smt->fetch(PDO::FETCH_ASSOC);
         return $allAmount['totalAmount'];
+    }
+
+    public function getMonthAmount($userId)
+    {
+        $smt = $this->pdo->prepare('SELECT SUM(amount) as monthAmount, MONTH(accrual_date) as month FROM spendings WHERE user_id = :user_id GROUP BY MONTH(accrual_date)');
+        $smt->execute([':user_id' => $userId]);
+        $totalAmount = $smt->fetch(PDO::FETCH_ASSOC);
+        return $totalAmount['monthAmount'];
+    }
+
+    public function getFilteredSpendings($userId, $categoryName, $start_date, $end_date)
+    {
+        $sql = 'SELECT spendings.*, categories.name AS categoryName FROM spendings LEFT JOIN categories ON spendings.category_id = categories.id WHERE spendings.user_id = :user_id';
+        if(!empty($categoryName)) {
+            $sql .= ' AND categories.name = :categoryName';
+        }
+        if(!empty($start_date)) {
+            $sql .= ' AND spendings.accrual_date >= :start_date';
+        }
+        if(!empty($end_date)) {
+            $sql .= ' AND spendings.accrual_date <= :end_date';
+        }
+
+        $smt = $this->pdo->prepare($sql);
+        $params = [':user_id' => $userId];
+        if(!empty($categoryName)) {
+            $params[':categoryName'] = $categoryName;
+        }
+        if (!empty($start_date)) {
+            $params[':start_date'] = $start_date;
+        }
+        if (!empty($end_date)) {
+            $params[':end_date'] = $end_date;
+        }
+        $smt->execute($params);
+        return $smt->fetchAll(PDO::FETCH_ASSOC);
     }
 }
