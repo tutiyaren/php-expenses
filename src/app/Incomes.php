@@ -13,6 +13,7 @@ interface incomeInterface
     public function getAllAmount($userId);
     public function getMonthAmount($userId);
     public function getFilteredIncomes($userId, $income_sourceName, $start_date, $end_date);
+    public function getYear($userId);
 }
 
 abstract class AbstractIncome implements incomeInterface
@@ -105,10 +106,23 @@ class Incomes extends AbstractIncome
 
     public function getMonthAmount($userId)
     {
-        $smt = $this->pdo->prepare('SELECT SUM(amount) as monthAmount, MONTH(accrual_date) as month FROM incomes WHERE user_id = :user_id GROUP BY MONTH(accrual_date)');
+        $smt = $this->pdo->prepare("SELECT SUM(amount) as monthAmount, MONTH(accrual_date) as month, YEAR(accrual_date) as year FROM incomes WHERE user_id = :user_id GROUP BY YEAR(accrual_date), MONTH(accrual_date)");
+        $smt->execute(['user_id' => $userId]);
+        $monthAmounts = $smt->fetchAll(PDO::FETCH_ASSOC);
+        $result = [];
+        foreach ($monthAmounts as $monthAmount) {
+            $year = $monthAmount['year'];
+            $month = $monthAmount['month'];
+            $result[$year][$month] = $monthAmount['monthAmount'];
+        }
+        return $result;
+    }
+
+    public function getYear($userId)
+    {
+        $smt = $this->pdo->prepare('SELECT DISTINCT YEAR(accrual_date) as year FROM incomes WHERE user_id = :user_id');
         $smt->execute([':user_id' => $userId]);
-        $totalAmount = $smt->fetch(PDO::FETCH_ASSOC);
-        return $totalAmount['monthAmount'];
+        return $smt->fetchAll(PDO::FETCH_ASSOC);
     }
 
     public function getFilteredIncomes($userId, $income_sourceName, $start_date, $end_date)
