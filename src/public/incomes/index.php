@@ -1,6 +1,12 @@
 <?php
 require_once '../common/auth.php';
+require '../../app/Incomes.php';
+use App\Incomes;
+$pdo = new PDO('mysql:host=mysql;dbname=kakeibo', 'root', 'password');
 
+$incomeModel = new Incomes($pdo);
+$allIncomes = $incomeModel->getIncomes($userId);
+$allAmount = $incomeModel->getAllAmount($userId);
 
 ?>
 
@@ -22,7 +28,7 @@ require_once '../common/auth.php';
         </div>
 
         <div>
-            <p>合計額 : 800000</p>
+            <p>合計額 : <?php echo $allAmount ?></p>
         </div>
         <div>
             <a href="create.php">収入を登録する</a>
@@ -63,19 +69,22 @@ require_once '../common/auth.php';
                 <th>削除</th>
             </tr>
             <!-- foreach -->
+            <?php foreach($allIncomes as $allIncome): ?>
             <tr>
-                <td>SES</td>
-                <td>300000</td>
-                <td>2024-09-18</td>
+                <td><?php echo $allIncome['name'] ?></td>
+                <td><?php echo $allIncome['amount'] ?></td>
+                <td><?php echo $allIncome['accrual_date'] ?></td>
                 <td>
-                    <a href="edit.php">編集</a>
+                    <a href="edit.php?id=<?php echo $allIncome['id'] ?>">編集</a>
                 </td>
                 <td>
                     <form action="../process/incomes/delete.php" method="POST">
+                        <input type="hidden" name="income_id" value="<?php echo $allIncome['id'] ?>">
                         <button type="submit" name="delete">削除</button>
                     </form>
                 </td>
             </tr>
+            <? endforeach; ?>
         </table>
 
     </div>
