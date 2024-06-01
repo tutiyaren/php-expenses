@@ -10,6 +10,7 @@ interface categoriesInterface
     public function deleteCategories($categories_id);
     public function getCategory($categories_id);
     public function updateCategories($category_id, $name);
+    public function getAllCategories();
 }
 
 abstract class AbstractCategories implements CategoriesInterface
@@ -77,4 +78,10 @@ class Categories extends AbstractCategories
         $smt = $this->pdo->prepare('UPDATE categories SET name = :name WHERE id = :id');
         $smt->execute(array(':id' => $categories, ':name' => $name));
     } 
+
+    public function getAllCategories()
+    {
+        $stmt = $this->pdo->query('SELECT * FROM categories');
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    }
 }
