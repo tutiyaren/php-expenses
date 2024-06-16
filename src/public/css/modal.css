@@ -1,0 +1,49 @@
+body.is-modal {
+  overflow: hidden;
+}
+.dialog {
+  padding: 0;
+  width: 50%;
+  clip-path: polygon(
+    5% 0,
+    95% 0,
+    100% 5%,
+    100% 95%,
+    95% 100%,
+    5% 100%,
+    0 95%,
+    0 5%
+  );
+}
+.dialog::backdrop {
+  background: rgba(94, 94, 94, 0.5);
+  backdrop-filter: blur(4px);
+}
+.dialog-inner {
+  display: flex;
+  flex-direction: column;
+  padding: 5% 8%;
+  text-align: center;
+}
+.dialog-title {
+  letter-spacing: 3px;
+}
+.dialog-wrapper {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+.dialog-link {
+  cursor: pointer;
+  text-decoration: none;
+  color: rgba(47, 47, 248, 0.699);
+  width: 40%;
+}
+.dialog-link:hover {
+  color: orange;
+}
+
+.close-modal {
+  padding: 3%;
+  cursor: pointer;
+}
