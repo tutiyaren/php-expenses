@@ -33,6 +33,7 @@ $monthSpendings = $spendingModel->getMonthAmount($userId, $selectedYear);
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>PHP-家計簿アプリ</title>
+  <link rel="stylesheet" href="./css/modal.css">
 </head>
 <body>
 
@@ -43,6 +44,31 @@ $monthSpendings = $spendingModel->getMonthAmount($userId, $selectedYear);
         <div>
             <h1>家計簿アプリ</h1>
         </div>
+
+        <!-- ページスキップモーダル -->
+        <a href="#" class="open-modal">ページスキップ</a>
+
+        <dialog class="dialog">
+            <div class="dialog-inner">
+                <p class="dialog-title">収入系</p>
+                <div class="dialog-wrapper">
+                    <a href="./incomes/index.php" class="dialog-link">収入TOP</a>
+                    <a href="./incomes/create.php" class="dialog-link">収入登録</a>
+                    <a href="./incomes/income_sources/index.php" class="dialog-link">収入源一覧</a>
+                    <a href="./incomes/income_sources/create.php" class="dialog-link">収入源追加</a>
+                </div>
+                <p class="dialog-title">支出系</p>
+                <div class="dialog-wrapper">
+                    <a href="./spendings/index.php" class="dialog-link">支出TOP</a>
+                    <a href="./spendings/create.php" class="dialog-link">支出登録</a>
+                    <a href="./spendings/categories/index.php" class="dialog-link">支出源一覧</a>
+                    <a href="./spendings/categories/create.php" class="dialog-link">支出源追加</a>
+                </div>
+                <div class="close">
+                    <span class="close-modal">✕</span>
+                </div>
+            </div>
+        </dialog>
 
         <!-- 年セレクトの検索 -->
         <div>
@@ -93,6 +119,8 @@ $monthSpendings = $spendingModel->getMonthAmount($userId, $selectedYear);
         </table>
 
     </div>
+
+    <script src="./js/modal.js"></script>
   
 </body>
 </html>
