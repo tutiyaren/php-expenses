@@ -35,6 +35,7 @@ $monthSpendings = $spendingModel->getMonthAmount($userId, $selectedYear);
   <title>PHP-家計簿アプリ</title>
   <link rel="stylesheet" href="./css/modal.css">
   <link rel="stylesheet" href="./css/click.css">
+  <link rel="stylesheet" href="./css/scroll.css">
 </head>
 <body>
 
@@ -123,5 +124,6 @@ $monthSpendings = $spendingModel->getMonthAmount($userId, $selectedYear);
 
     <script src="./js/modal.js"></script>
     <script src="./js/click.js"></script>
+    <script src="./js/scroll.js"></script>
 </body>
 </html>
