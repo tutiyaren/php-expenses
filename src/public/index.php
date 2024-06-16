@@ -34,6 +34,7 @@ $monthSpendings = $spendingModel->getMonthAmount($userId, $selectedYear);
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>PHP-家計簿アプリ</title>
   <link rel="stylesheet" href="./css/modal.css">
+  <link rel="stylesheet" href="./css/click.css">
 </head>
 <body>
 
@@ -42,7 +43,7 @@ $monthSpendings = $spendingModel->getMonthAmount($userId, $selectedYear);
     <div>
 
         <div>
-            <h1>家計簿アプリ</h1>
+            <h1 class="kakeibo">家計簿アプリ</h1>
         </div>
 
         <!-- ページスキップモーダル -->
@@ -121,6 +122,6 @@ $monthSpendings = $spendingModel->getMonthAmount($userId, $selectedYear);
     </div>
 
     <script src="./js/modal.js"></script>
-  
+    <script src="./js/click.js"></script>
 </body>
 </html>
